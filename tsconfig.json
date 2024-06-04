@@ -17,6 +17,12 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "alwaysStrict": true
-  }
+    "alwaysStrict": true,
+    "paths": {
+      "@domain/*": ["src/domain/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@interface/*": ["src/interface/*"]
+    }
+  },
+  "typeRoots": ["node_modules/@types"]
 }

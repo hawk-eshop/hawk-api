@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigService, ConfigModule } from '@nestjs/config'
 
+import { isProdEnv } from 'src/app.enviroment'
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -13,11 +15,19 @@ import { ConfigService, ConfigModule } from '@nestjs/config'
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        autoLoadEntities: true,
-        synchronize: true
+        entities: [
+          __dirname + '/../../domain/**/*.entity{.ts,.js}',
+          __dirname + '/../../domain/shared/**/*.entity{.ts,.js}' // Include shared entities
+        ],
+        migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
+        synchronize: false,
+        cli: {
+          entitiesDir: 'src/domain/**/*.entity.ts',
+          migrationsDir: 'src/migrations'
+        }
       }),
       inject: [ConfigService]
     })
   ]
 })
-export class PostgresModule {}
+export class PostgresDatabaseModule {}

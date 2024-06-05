@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core'
 
-import { KafkaConsumerService } from '@infrastructure/kafka'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const kafkaConsumerService = app.get(KafkaConsumerService)
-  /* Initialize Kafka Consumer */
-  kafkaConsumerService.onModuleInit()
 
   await app.listen(3000)
+  console.log('Application is running on port 3000')
 }
-bootstrap()
+bootstrap().catch((err) => {
+  console.error('Error during bootstrap:', err)
+  process.exit(1)
+})

@@ -1,15 +1,15 @@
 import { KafkaOptions, Transport } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
 
-export const kafkaConfig = (configService: ConfigService): KafkaOptions => ({
+export const createKafkaConfig = (configService: ConfigService): KafkaOptions => ({
   transport: Transport.KAFKA,
   options: {
     client: {
-      clientId: 'identity-server',
-      brokers: [configService.get<string>('KAFKA_BROKER')]
+      clientId: configService.get<string>('KAFKA_CLIENT_ID', 'default-client-id'),
+      brokers: configService.get<string[]>('KAFKA_BROKERS', ['localhost:9092'])
     },
     consumer: {
-      groupId: 'identity-consumer-group'
+      groupId: configService.get<string>('KAFKA_CONSUMER_GROUP_ID', 'default-consumer-group')
     }
   }
 })

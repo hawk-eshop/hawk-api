@@ -1,27 +1,38 @@
-import { Injectable, OnModuleInit } from '@nestjs/common'
-import { Kafka, EachMessagePayload } from 'kafkajs'
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { Kafka, EachMessagePayload } from 'kafkajs'
 
 @Injectable()
-export class KafkaConsumerService implements OnModuleInit {
+export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
   private consumer
 
   constructor(private configService: ConfigService) {
     const kafka = new Kafka({
-      brokers: [this.configService.get<string>('KAFKA_BROKER')]
+      clientId: this.configService.get<string>('KAFKA_CLIENT_ID', 'default-client-id'),
+      brokers: this.configService.get<string[]>('KAFKA_BROKERS', ['localhost:9092'])
     })
-    this.consumer = kafka.consumer({ groupId: 'identity-consumer-group' })
+    this.consumer = kafka.consumer({
+      groupId: this.configService.get<string>('KAFKA_CONSUMER_GROUP_ID', 'default-consumer-group')
+    })
   }
 
   async onModuleInit() {
     await this.consumer.connect()
-    await this.consumer.subscribe({ topic: 'user-events', fromBeginning: true })
+  }
 
+  async subscribe(topic: string, fromBeginning = true) {
+    await this.consumer.subscribe({ topic, fromBeginning })
+  }
+
+  async run(eachMessageHandler: (payload: EachMessagePayload) => Promise<void>) {
     await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }: EachMessagePayload) => {
-        const event = JSON.parse(message.value.toString())
-        // Handle the event (e.g., user created, user updated)
+      eachMessage: async (payload: EachMessagePayload) => {
+        await eachMessageHandler(payload)
       }
     })
+  }
+
+  async onModuleDestroy() {
+    await this.consumer.disconnect()
   }
 }

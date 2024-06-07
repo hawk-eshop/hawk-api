@@ -24,7 +24,6 @@ import { UserController } from '@interfaces/identity/controllers/user.controller
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
-    TypeOrmModule.forFeature([]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

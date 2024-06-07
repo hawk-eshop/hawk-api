@@ -7,7 +7,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - /data/postgres:/data/postgres
+      - ~/docker_data/postgres:/var/lib/postgresql/data
     env_file:
       - docker.env
     networks:
@@ -21,7 +21,7 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - /data/pgadmin:/root/.pgadmin
+      - ~/docker_data/pgadmin:/var/lib/pgadmin
     env_file:
       - docker.env
     networks:

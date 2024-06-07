@@ -17,7 +17,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config'
           __dirname + '../../domain/**/*.entity{.ts,.js}',
           __dirname + '../../domain/shared/**/*.entity{.ts,.js}' // Include shared entities
         ],
-        migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
+        migrations: [__dirname + '../../migrations/*{.ts,.js}'],
         synchronize: false
       }),
       inject: [ConfigService]

@@ -21,7 +21,8 @@
     "paths": {
       "@domain/*": ["src/domain/*"],
       "@infrastructure/*": ["src/infrastructure/*"],
-      "@interface/*": ["src/interface/*"]
+      "@interfaces/*": ["src/interfaces/*"],
+      "@use-cases/*": ["src/use-cases/*"]
     }
   },
   "typeRoots": ["node_modules/@types"]

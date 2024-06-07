@@ -1,8 +1,7 @@
-import { Entity, Column, ManyToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 
 import { BaseEntity } from '@domain/shared/entities/base.entity'
 import { ICreationAudit, IDeletionAudit, IModificationAudit } from '@domain/shared/interfaces/audit.interface'
-import { User } from './user.entity'
 
 @Entity('roles')
 export class Role extends BaseEntity implements ICreationAudit, IModificationAudit, IDeletionAudit {

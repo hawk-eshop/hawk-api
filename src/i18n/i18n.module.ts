@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { I18nModule, I18nJsonLoader, QueryResolver, AcceptLanguageResolver } from 'nestjs-i18n'
+import { I18nModule, QueryResolver, AcceptLanguageResolver } from 'nestjs-i18n'
 import * as path from 'path'
 
 @Module({
@@ -7,7 +7,7 @@ import * as path from 'path'
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
-        path: path.join(__dirname, '/infrastructure/i18n/locales/'),
+        path: path.join(__dirname, '/'),
         watch: true
       },
       resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver]

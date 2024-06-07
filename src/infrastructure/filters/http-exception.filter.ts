@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common'
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { I18nContext, I18nService } from 'nestjs-i18n'
 
@@ -8,6 +8,8 @@ import { RFC_9110_BASE_URL, RFC_9110_LINKS } from '@infrastructure/utils/rfc9110
 
 @Catch(CustomHttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name)
+
   constructor(private readonly i18n: I18nService) {}
 
   catch(exception: CustomHttpException, host: ArgumentsHost) {
@@ -32,6 +34,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         })
       }
     }
+
+    this.logger.error(`[${status}] ${message}`, exception.stack)
 
     response.status(status).json(problemDetails)
   }

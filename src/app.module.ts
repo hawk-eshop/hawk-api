@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_FILTER } from '@nestjs/core'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { CqrsModule } from '@nestjs/cqrs'
@@ -7,9 +7,8 @@ import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 
 /* Modules */
-import { I18nCustomModule } from '@infrastructure/i18n/i18n.module'
+import { I18nCustomModule } from 'src/i18n/i18n.module'
 import { DatabaseModule } from '@infrastructure/database/database.module'
-import { KafkaModule } from '@infrastructure/kafka/kafka.module'
 
 /* Strategies */
 import { JwtStrategy } from '@infrastructure/auth/jwt.strategy'
@@ -17,8 +16,9 @@ import { JwtStrategy } from '@infrastructure/auth/jwt.strategy'
 /* Filters */
 import { HttpExceptionFilter } from '@infrastructure/filters/http-exception.filter'
 
-/* Interceptors */
-import { KafkaProduceInterceptor } from '@infrastructure/interceptors/kafka-produce.interceptor'
+/* Modules */
+import { UserModule } from '@interfaces/identity/modules/user.module'
+import { UserController } from '@interfaces/identity/controllers/user.controller'
 
 @Module({
   imports: [
@@ -34,9 +34,8 @@ import { KafkaProduceInterceptor } from '@infrastructure/interceptors/kafka-prod
       }),
       inject: [ConfigService]
     }),
-    CqrsModule,
     I18nCustomModule,
-    KafkaModule
+    UserModule
   ],
   controllers: [],
   providers: [
@@ -44,10 +43,6 @@ import { KafkaProduceInterceptor } from '@infrastructure/interceptors/kafka-prod
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: KafkaProduceInterceptor
     }
   ]
 })

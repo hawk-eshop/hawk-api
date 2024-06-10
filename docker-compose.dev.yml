@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  hawk_postgres:
+    container_name: hawk_postgres
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - .app-data/hawk_postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - hawk_network
+    restart: unless-stopped
+
+  hawk_pgadmin:
+    container_name: hawk_pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    volumes:
+      - .app-data/hawk_pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    networks:
+      - hawk_network
+    restart: unless-stopped
+
+  hawk_mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - .app-data/hawk_mongodb:/data/db
+    restart: unless-stopped
+
+networks:
+  hawk_network:
+    driver: bridge

@@ -1,3 +1,4 @@
 node_modules/
 dist/
-src/migrations/*
+src/database/migrations/*
+.app_data/

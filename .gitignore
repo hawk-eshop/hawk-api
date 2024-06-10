@@ -44,6 +44,8 @@ lerna-debug.log*
 
 docker.env
 
+/.app-data
+
 # temp directory
 .temp
 .tmp

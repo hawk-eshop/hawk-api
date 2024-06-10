@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 
-const command = `npm run typeorm -- migration:run -d src/infrastructure/database/data-source.ts`
+const command = `npm run typeorm -- migration:run -d ./ormconfig.ts`
 
 ;(() =>
   exec(command, (error, stdout, stderr) => {

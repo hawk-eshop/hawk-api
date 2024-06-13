@@ -9,7 +9,7 @@ import { default as parse, type Units } from 'parse-duration'
 import { SnakeNamingStrategy } from '@shared/strategies/snake-naming.strategy'
 
 @Injectable()
-export class HawkApiConfigService {
+export class InfraService {
   constructor(private configService: ConfigService) {}
 
   get isDevelopment(): boolean {
@@ -82,7 +82,7 @@ export class HawkApiConfigService {
       __dirname + '/../../modules/**/*.entity{.ts,.js}',
       __dirname + '/../../modules/**/*.view-entity{.ts,.js}'
     ]
-    const migrations = [__dirname + '/../../database/migrations/*{.ts,.js}']
+    const migrations = [__dirname, '/migrations/*.{ts,js}']
 
     return {
       entities,
@@ -90,6 +90,7 @@ export class HawkApiConfigService {
       keepConnectionAlive: !this.isTest,
       dropSchema: this.isTest,
       type: 'postgres',
+      entityPrefix: 'hawk_',
       host: this.getString('DB_HOST'),
       port: this.getNumber('DB_PORT'),
       username: this.getString('DB_USERNAME'),
@@ -102,7 +103,6 @@ export class HawkApiConfigService {
   }
 
   get mongodbConfig(): MongooseModuleFactoryOptions {
-    console.log('MONGO_URI', this.getString('MONGO_URI'))
     return {
       uri: this.getString('MONGO_URI'),
       dbName: this.getString('MONGO_NAME')

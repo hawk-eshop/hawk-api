@@ -1,64 +1,76 @@
 import compression from 'compression'
 import helmet from 'helmet'
-import {
-  ClassSerializerInterceptor,
-  HttpStatus,
-  Logger,
-  UnprocessableEntityException,
-  ValidationPipe
-} from '@nestjs/common'
+import bodyParser from 'body-parser'
+import { VersioningType } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
+import { NextFunction, Request, Response } from 'express'
 import { ExpressAdapter, type NestExpressApplication } from '@nestjs/platform-express'
-// import morgan from 'morgan'
 import { initializeTransactionalContext } from 'typeorm-transactional'
+import { bold } from 'colorette'
 
-import { SharedModule } from '@shared/shared.module'
-import { HawkApiConfigService } from '@shared/services/hawk-api.service'
+import { IPinoAdapter } from '@shared/infrastructure/pino/pino.adapter'
+import { InfraService } from '@shared/infrastructure/infra.service'
+import { InfraModule } from '@shared/infrastructure/infra.module'
+import { ExceptionFilter } from '@shared/observables/filters/http-exception.filter'
+import { RequestTimeoutInterceptor } from '@shared/observables/interceptors/request-timout.interceptor'
 
 import { AppModule } from './app.module'
 
 export async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext()
 
-  const logger = new Logger(bootstrap.name)
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), { cors: true })
-  app.enable('trust proxy')
-  app.use(helmet())
-  // // app.setGlobalPrefix('/api'); use api as global prefix if you don't have subdomain
-  app.use(compression())
-  // app.use(morgan('combined'))
-  app.enableVersioning()
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {
+    cors: true,
+    bufferLogs: true
+  })
 
-  const reflector = app.get(Reflector)
+  const loggerService = app.get(IPinoAdapter)
+  loggerService.setContext(bootstrap.name)
+  app.useLogger(loggerService)
 
-  // app.useGlobalFilters(new HttpExceptionFilter(reflector), new QueryFailedFilter(reflector))
+  app.useGlobalFilters(new ExceptionFilter(loggerService))
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector))
+  app.useGlobalInterceptors(new RequestTimeoutInterceptor(new Reflector(), loggerService))
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      transform: true,
-      dismissDefaultMessages: true,
-      exceptionFactory: (errors) => new UnprocessableEntityException(errors)
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: [`'self'`],
+          styleSrc: [`'self'`, `'unsafe-inline'`],
+          imgSrc: [`'self'`, 'data:', 'blob:', 'validator.swagger.io'],
+          scriptSrc: [`'self'`, `https: 'unsafe-inline'`]
+        }
+      }
     })
   )
 
-  const configService = app.select(SharedModule).get(HawkApiConfigService)
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.originalUrl && req.originalUrl.split('/').pop() === 'favicon.ico') {
+      return res.sendStatus(204)
+    }
+    next()
+  })
 
-  if (configService.documentationEnabled) {
-    // setupSwagger(app)
-  }
+  app.use(compression())
 
-  // Starts listening for shutdown hooks
-  if (!configService.isDevelopment) {
-    app.enableShutdownHooks()
-  }
+  app.use(bodyParser.urlencoded({ extended: true }))
 
+  app.enableVersioning({ type: VersioningType.URI })
+
+  process.on('uncaughtException', (error) => {
+    loggerService.error(error)
+  })
+
+  process.on('unhandledRejection', (error) => {
+    loggerService.error(error)
+  })
+
+  const configService = app.select(InfraModule).get(InfraService)
   const port = configService.appConfig.port
+
   await app.listen(port)
-  logger.log(`Application running on ${await app.getUrl()}`)
+  loggerService.log(`#==> Application is running at ${bold(await app.getUrl())}`)
 
   return app
 }

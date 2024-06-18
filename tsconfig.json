@@ -7,6 +7,7 @@
     "noLib": false,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
@@ -26,7 +27,8 @@
       "@infrastructure/*": ["src/infrastructure/*"],
       "@interfaces/*": ["src/interfaces/*"],
       "@use-cases/*": ["src/use-cases/*"],
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["src/shared/*"],
+      "@modules/*": ["src/modules/*"]
     }
   },
   "include": ["src/**/*", "scripts/*"],

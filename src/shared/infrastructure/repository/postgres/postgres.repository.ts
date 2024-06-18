@@ -1,5 +1,5 @@
 import {
-  BaseEntity,
+  DeepPartial,
   FindOneOptions,
   FindOptionsSelect,
   FindOptionsWhere,
@@ -9,19 +9,18 @@ import {
   SaveOptions
 } from 'typeorm'
 
-import { CreatedModel, CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
+import { BaseEntity } from '@shared/utils/entity'
+import { CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
 import { IEntity } from '../entity'
 import { IRepository } from '../repository.adapter'
 
-export class TypeORMRepository<T extends BaseEntity & IEntity = BaseEntity & IEntity>
-  implements IRepository<T, SaveOptions>
-{
+export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, SaveOptions> {
   constructor(readonly repository: Repository<T>) {}
 
-  async create(document: T, saveOptions?: SaveOptions): Promise<CreatedModel> {
+  async create(document: DeepPartial<T>, saveOptions?: SaveOptions): Promise<T> {
     const entity = this.repository.create(document)
     const model = await entity.save(saveOptions)
-    return { created: model.hasId(), id: model.id }
+    return model
   }
 
   async findOr(propertyList: (keyof T)[], value: string): Promise<T[]> {

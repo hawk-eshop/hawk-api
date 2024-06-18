@@ -79,10 +79,10 @@ export class InfraService {
 
   get postgresConfig(): TypeOrmModuleOptions {
     const entities = [
-      __dirname + '/../../modules/**/*.entity{.ts,.js}',
-      __dirname + '/../../modules/**/*.view-entity{.ts,.js}'
+      __dirname + '/../../modules/**/**/entities/*.entity{.ts,.js}',
+      __dirname + '/../../modules/**/**/entities/*.view-entity{.ts,.js}'
     ]
-    const migrations = [__dirname, '/migrations/*.{ts,js}']
+    const migrations = [__dirname, '/database/migrations/*.{ts,js}']
 
     return {
       entities,

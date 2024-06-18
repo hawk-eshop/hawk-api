@@ -10,20 +10,21 @@ import {
   UpdateWithAggregationPipeline
 } from 'mongoose'
 
-import { CreatedModel, CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
-import { IRepository } from '../repository.adapter'
-import { validateFindByCommandsFilter } from '../utils'
 import { ApiBadRequestException } from '@shared/utils/exception'
 import { ConvertMongoFilterToBaseRepository } from '@shared/observables/decorators/convert-filter-mongodb.decorator'
+
+import { CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
+import { IRepository } from '../repository.adapter'
+import { validateFindByCommandsFilter } from '../utils'
 
 export class MongoRepository<T extends Document> implements IRepository<T, SaveOptions> {
   constructor(private readonly model: Model<T>) {}
 
-  async create(document: T, saveOptions: SaveOptions): Promise<CreatedModel> {
+  async create(document: T, saveOptions: SaveOptions): Promise<T> {
     const createdEntity = new this.model({ ...document, _id: document.id })
     const savedResult = await createdEntity.save(saveOptions)
 
-    return { id: savedResult.id, created: !!savedResult.id }
+    return savedResult
   }
 
   async insertMany(documents: T[], saveOptions: InsertManyOptions): Promise<void> {

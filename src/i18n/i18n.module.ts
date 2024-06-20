@@ -10,7 +10,10 @@ import * as path from 'path'
         path: path.join(__dirname, '/'),
         watch: true
       },
-      resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver]
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver
+      ]
     })
   ]
 })

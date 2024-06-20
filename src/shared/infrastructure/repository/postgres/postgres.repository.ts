@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   DeepPartial,
   FindOneOptions,
   FindOptionsSelect,
@@ -9,18 +10,27 @@ import {
   SaveOptions
 } from 'typeorm'
 
-import { BaseEntity } from '@shared/utils/entity'
-import { CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
+import {
+  CreatedOrUpdateModel,
+  DatabaseOperationCommand,
+  RemovedModel,
+  UpdatedModel
+} from '../types'
 import { IEntity } from '../entity'
 import { IRepository } from '../repository.adapter'
 
-export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, SaveOptions> {
+export class TypeORMRepository<T extends BaseEntity & IEntity>
+  implements IRepository<T, SaveOptions>
+{
   constructor(readonly repository: Repository<T>) {}
 
-  async create(document: DeepPartial<T>, saveOptions?: SaveOptions): Promise<T> {
+  async create(
+    document: DeepPartial<T>,
+    saveOptions?: SaveOptions
+  ): Promise<T> {
     const entity = this.repository.create(document)
     const model = await entity.save(saveOptions)
-    return model
+    return model as T
   }
 
   async findOr(propertyList: (keyof T)[], value: string): Promise<T[]> {
@@ -40,7 +50,9 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     await this.repository.insert(document as object[])
   }
 
-  async createOrUpdate<TUpdate = Partial<T>>(updated: TUpdate): Promise<CreatedOrUpdateModel> {
+  async createOrUpdate<TUpdate = Partial<T>>(
+    updated: TUpdate
+  ): Promise<CreatedOrUpdateModel> {
     const documentEntity: IEntity = updated as IEntity
     if (!documentEntity?.id) {
       throw new Error('id is required')
@@ -59,7 +71,11 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
       { ...exists, ...updated } as object
     )
 
-    return { id: exists['id'], created: false, updated: (row.affected || 0) > 0 }
+    return {
+      id: exists['id'],
+      created: false,
+      updated: (row.affected || 0) > 0
+    }
   }
 
   async findAll(): Promise<T[]> {
@@ -79,34 +95,50 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     } as FindOneOptions<T>)
   }
 
-  async findByCommands(filterList: DatabaseOperationCommand<T>[]): Promise<T[]> {
+  async findByCommands(
+    filterList: DatabaseOperationCommand<T>[]
+  ): Promise<T[]> {
     const searchList: { [key: string]: unknown } = {}
 
     const postgresSearch = {
       equal: {
         query: (value: unknown[]) =>
-          Raw((alias) => `${alias} ILIKE ANY ('{${value.map((v) => `${`${v}`}`).join(', ')}}')`),
+          Raw(
+            (alias) =>
+              `${alias} ILIKE ANY ('{${value.map((v) => `${`${v}`}`).join(', ')}}')`
+          ),
         like: false
       },
       not_equal: {
         query: (value: unknown[]) =>
-          Raw((alias) => `${alias} NOT ILIKE ALL (ARRAY[${value.map((v) => `'${v}'`).join(', ')}])`),
+          Raw(
+            (alias) =>
+              `${alias} NOT ILIKE ALL (ARRAY[${value.map((v) => `'${v}'`).join(', ')}])`
+          ),
         like: false
       },
       not_contains: {
         query: (value: unknown[]) =>
-          Raw((alias) => `${alias} NOT ILIKE ALL (ARRAY[${value.map((v) => `'%${v}%'`).join(', ')}])`),
+          Raw(
+            (alias) =>
+              `${alias} NOT ILIKE ALL (ARRAY[${value.map((v) => `'%${v}%'`).join(', ')}])`
+          ),
         like: true
       },
       contains: {
         query: (value: unknown[]) =>
-          Raw((alias) => `${alias} ILIKE ANY ('{${value.map((v) => `${`%${v}%`}`).join(', ')}}')`),
+          Raw(
+            (alias) =>
+              `${alias} ILIKE ANY ('{${value.map((v) => `${`%${v}%`}`).join(', ')}}')`
+          ),
         like: true
       }
     }
 
     for (const filter of filterList) {
-      searchList[`${filter.property.toString()}`] = postgresSearch[filter.command].query(filter.value)
+      searchList[`${filter.property.toString()}`] = postgresSearch[
+        filter.command
+      ].query(filter.value)
     }
 
     return this.repository.find({
@@ -125,8 +157,14 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     } as FindOneOptions<T>)
   }
 
-  async updateOne<TQuery = Partial<T>, TUpdate = Partial<T>>(filter: TQuery, updated: TUpdate): Promise<UpdatedModel> {
-    const data = await this.repository.update(filter as FindOptionsWhere<T>, Object.assign({}, updated))
+  async updateOne<TQuery = Partial<T>, TUpdate = Partial<T>>(
+    filter: TQuery,
+    updated: TUpdate
+  ): Promise<UpdatedModel> {
+    const data = await this.repository.update(
+      filter as FindOptionsWhere<T>,
+      Object.assign({}, updated)
+    )
     return {
       modifiedCount: data.affected || 0,
       upsertedCount: 0,
@@ -140,13 +178,22 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     filter: TQuery,
     updated: TUpdate
   ): Promise<T | null> {
-    await this.repository.update(filter as FindOptionsWhere<T>, updated as object)
+    await this.repository.update(
+      filter as FindOptionsWhere<T>,
+      updated as object
+    )
 
     return this.findOne(filter)
   }
 
-  async updateMany<TQuery = Partial<T>, TUpdate = Partial<T>>(filter: TQuery, updated: TUpdate): Promise<UpdatedModel> {
-    const data = await this.repository.update(filter as FindOptionsWhere<T>, updated as object)
+  async updateMany<TQuery = Partial<T>, TUpdate = Partial<T>>(
+    filter: TQuery,
+    updated: TUpdate
+  ): Promise<UpdatedModel> {
+    const data = await this.repository.update(
+      filter as FindOptionsWhere<T>,
+      updated as object
+    )
     return {
       modifiedCount: data.affected || 0,
       upsertedCount: 0,
@@ -167,7 +214,10 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     })
   }
 
-  async findAllWithSelectFields<TQuery = Partial<T>>(includeProperties: (keyof T)[], filter?: TQuery): Promise<T[]> {
+  async findAllWithSelectFields<TQuery = Partial<T>>(
+    includeProperties: (keyof T)[],
+    filter?: TQuery
+  ): Promise<T[]> {
     const select = includeProperties.map((e) => `${e.toString()}`)
     return this.repository.find({
       where: filter as FindOptionsWhere<T>,
@@ -175,7 +225,10 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     })
   }
 
-  async findOneWithExcludeFields(filter: unknown, excludeProperties: (keyof T)[]): Promise<T | null> {
+  async findOneWithExcludeFields(
+    filter: unknown,
+    excludeProperties: (keyof T)[]
+  ): Promise<T | null> {
     const select = excludeProperties.map((e) => `${e.toString()}`)
     return this.repository.findOne({
       where: filter as FindOptionsWhere<T>,
@@ -183,7 +236,10 @@ export class TypeORMRepository<T extends BaseEntity> implements IRepository<T, S
     })
   }
 
-  async findAllWithExcludeFields<TQuery = Partial<T>>(excludeProperties: (keyof T)[], filter?: TQuery): Promise<T[]> {
+  async findAllWithExcludeFields<TQuery = Partial<T>>(
+    excludeProperties: (keyof T)[],
+    filter?: TQuery
+  ): Promise<T[]> {
     const select = excludeProperties.map((e) => `${e.toString()}`)
     return this.repository.find({
       where: filter as FindOptionsWhere<T>,

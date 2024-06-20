@@ -22,7 +22,11 @@ export class BaseException extends HttpException {
   readonly code?: string
   readonly parameters!: ParametersType
 
-  constructor(message: MessageType, status: HttpStatus, parameters?: ParametersType) {
+  constructor(
+    message: MessageType,
+    status: HttpStatus,
+    parameters?: ParametersType
+  ) {
     super(message, status)
 
     Error.captureStackTrace(this)

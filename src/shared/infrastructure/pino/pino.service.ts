@@ -50,7 +50,11 @@ export class PinoLoggerService extends ConsoleLogger implements IPinoAdapter {
 
   error(message: any, trace?: string, context?: string, ...args: any[]) {
     if (context) {
-      this.logger.error({ [this.contextName]: context, trace }, message, ...args)
+      this.logger.error(
+        { [this.contextName]: context, trace },
+        message,
+        ...args
+      )
     } else if (trace) {
       this.logger.error({ trace }, message, ...args)
     } else {

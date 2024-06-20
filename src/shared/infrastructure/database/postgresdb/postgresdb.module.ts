@@ -21,7 +21,9 @@ import { PinoModule } from '@shared/infrastructure/pino/pino.module'
         if (!options) {
           throw new Error('Invalid options passed')
         }
-        return Promise.resolve(addTransactionalDataSource(new DataSource(options)))
+        return Promise.resolve(
+          addTransactionalDataSource(new DataSource(options))
+        )
       }
     })
   ]

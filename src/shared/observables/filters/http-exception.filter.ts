@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, ExceptionFilter as AppExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter as AppExceptionFilter,
+  HttpException,
+  HttpStatus
+} from '@nestjs/common'
 import { AxiosError } from 'axios'
 import { ZodError } from 'zod'
 
@@ -22,7 +28,10 @@ export class ExceptionFilter implements AppExceptionFilter {
     exception.traceid = [exception.traceid, request['id']].find(Boolean)
 
     this.loggerService.error(exception, exception.message)
-    const message = this.getMessage(exception, status || HttpStatus.INTERNAL_SERVER_ERROR)
+    const message = this.getMessage(
+      exception,
+      status || HttpStatus.INTERNAL_SERVER_ERROR
+    )
 
     response.status(status).json({
       error: {
@@ -36,7 +45,10 @@ export class ExceptionFilter implements AppExceptionFilter {
     } as ErrorModel)
   }
 
-  private getMessage(exception: BaseException, status: string | number): string[] {
+  private getMessage(
+    exception: BaseException,
+    status: string | number
+  ): string[] {
     const defaultError = errorStatus[String(status)]
     if (defaultError) {
       return defaultError

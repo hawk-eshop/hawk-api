@@ -1,8 +1,26 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
-import { BaseEntity, ICreationAudit, IDeletionAudit, IModificationAudit } from '@shared/utils/entity'
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  PrimaryGeneratedColumn
+} from 'typeorm'
+import {
+  IBaseEntity,
+  ICreationAudit,
+  IDeletionAudit,
+  IModificationAudit
+} from '@shared/utils/entity'
 
 @Entity('roles')
-export class RoleEntity extends BaseEntity implements ICreationAudit, IModificationAudit, IDeletionAudit {
+export class RoleEntity
+  extends BaseEntity
+  implements IBaseEntity, ICreationAudit, IModificationAudit, IDeletionAudit
+{
+  @PrimaryGeneratedColumn('uuid')
+  id: string
+
   @Column({ unique: true })
   name: string
 

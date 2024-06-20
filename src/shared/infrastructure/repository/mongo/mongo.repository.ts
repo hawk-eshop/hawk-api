@@ -13,11 +13,18 @@ import {
 import { ApiBadRequestException } from '@shared/utils/exception'
 import { ConvertMongoFilterToBaseRepository } from '@shared/observables/decorators/convert-filter-mongodb.decorator'
 
-import { CreatedOrUpdateModel, DatabaseOperationCommand, RemovedModel, UpdatedModel } from '../types'
+import {
+  CreatedOrUpdateModel,
+  DatabaseOperationCommand,
+  RemovedModel,
+  UpdatedModel
+} from '../types'
 import { IRepository } from '../repository.adapter'
 import { validateFindByCommandsFilter } from '../utils'
 
-export class MongoRepository<T extends Document> implements IRepository<T, SaveOptions> {
+export class MongoRepository<T extends Document>
+  implements IRepository<T, SaveOptions>
+{
   constructor(private readonly model: Model<T>) {}
 
   async create(document: T, saveOptions: SaveOptions): Promise<T> {
@@ -27,7 +34,10 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
     return savedResult
   }
 
-  async insertMany(documents: T[], saveOptions: InsertManyOptions): Promise<void> {
+  async insertMany(
+    documents: T[],
+    saveOptions: InsertManyOptions
+  ): Promise<void> {
     await this.model.insertMany(documents, saveOptions)
   }
 
@@ -55,7 +65,9 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
 
   @ConvertMongoFilterToBaseRepository()
   async find(filter: FilterQuery<T>, options?: QueryOptions): Promise<T[]> {
-    return (await this.model.find(filter, undefined, options)).map((u) => u.toObject({ virtuals: true }))
+    return (await this.model.find(filter, undefined, options)).map((u) =>
+      u.toObject({ virtuals: true })
+    )
   }
 
   async findById(id: string | number): Promise<T | null> {
@@ -67,7 +79,10 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
   }
 
   @ConvertMongoFilterToBaseRepository()
-  async findOne(filter: FilterQuery<T>, options?: QueryOptions): Promise<T | null> {
+  async findOne(
+    filter: FilterQuery<T>,
+    options?: QueryOptions
+  ): Promise<T | null> {
     const data = await this.model.findOne(filter, undefined, options)
 
     if (!data) return null
@@ -94,7 +109,11 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
     updated: UpdateWithAggregationPipeline | UpdateQuery<T>,
     options?: any
   ): Promise<UpdatedModel> {
-    return await this.model.updateOne(filter, { $set: Object.assign({}, updated) }, options)
+    return await this.model.updateOne(
+      filter,
+      { $set: Object.assign({}, updated) },
+      options
+    )
   }
 
   @ConvertMongoFilterToBaseRepository()
@@ -105,7 +124,11 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
   ): Promise<T | null> {
     Object.assign(options, { new: true })
 
-    const model = await this.model.findOneAndUpdate(filter, { $set: updated }, options)
+    const model = await this.model.findOneAndUpdate(
+      filter,
+      { $set: updated },
+      options
+    )
 
     if (!model) {
       return null
@@ -123,24 +146,41 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
     return await this.model.updateMany(filter, { $set: updated }, options)
   }
 
-  async findIn(input: { [key in keyof T]: string[] }, options?: QueryOptions): Promise<T[]> {
+  async findIn(
+    input: { [key in keyof T]: string[] },
+    options?: QueryOptions
+  ): Promise<T[]> {
     const key = Object.keys(input)[0]
-    const filter = { [key]: { $in: input[key === 'id' ? '_id' : key] }, deletedAt: null }
+    const filter = {
+      [key]: { $in: input[key === 'id' ? '_id' : key] },
+      deletedAt: null
+    }
     const data = await this.model.find(filter, null, options)
 
     return data.map((d) => d.toObject({ virtuals: true }))
   }
 
-  async findOr(propertyList: (keyof T)[], value: string, options?: QueryOptions): Promise<T[]> {
+  async findOr(
+    propertyList: (keyof T)[],
+    value: string,
+    options?: QueryOptions
+  ): Promise<T[]> {
     const filter = propertyList.map((property) => {
       return { [property]: value }
     })
-    const data = await this.model.find({ $or: filter as FilterQuery<T>[], deletedAt: null }, null, options)
+    const data = await this.model.find(
+      { $or: filter as FilterQuery<T>[], deletedAt: null },
+      null,
+      options
+    )
 
     return data.map((d) => d.toObject({ virtuals: true }))
   }
 
-  async findByCommands(filterList: DatabaseOperationCommand<T>[], options?: QueryOptions): Promise<T[]> {
+  async findByCommands(
+    filterList: DatabaseOperationCommand<T>[],
+    options?: QueryOptions
+  ): Promise<T[]> {
     const mongoSearch = {
       equal: { type: '$in', like: false },
       not_equal: { type: '$nin', like: false },
@@ -157,12 +197,18 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
 
       if (command.like) {
         Object.assign(searchList, {
-          [filter.property]: { [command.type]: filter.value.map((value) => new RegExp(`^${value}`, 'i')) }
+          [filter.property]: {
+            [command.type]: filter.value.map(
+              (value) => new RegExp(`^${value}`, 'i')
+            )
+          }
         })
         continue
       }
 
-      Object.assign(searchList, { [filter.property]: { [command.type]: filter.value } })
+      Object.assign(searchList, {
+        [filter.property]: { [command.type]: filter.value }
+      })
     }
 
     Object.assign(searchList, { deletedAt: null })
@@ -180,7 +226,9 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
   ): Promise<T | null> {
     const exclude = excludeProperties.map((e) => `-${e.toString()}`)
 
-    const data = await this.model.findOne(filter, undefined, options).select(exclude.join(' '))
+    const data = await this.model
+      .findOne(filter, undefined, options)
+      .select(exclude.join(' '))
 
     if (!data) return null
 
@@ -196,7 +244,9 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
 
     filter = this.applyFilterWhenFilterParameterIsNotFirstOption(filter)
 
-    const data = await this.model.find(filter, undefined, options).select(exclude.join(' '))
+    const data = await this.model
+      .find(filter, undefined, options)
+      .select(exclude.join(' '))
 
     return data.map((d) => d.toObject({ virtuals: true }))
   }
@@ -209,7 +259,9 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
   ): Promise<T | null> {
     const include = includeProperties.map((e) => `${e.toString()}`)
 
-    const data = await this.model.findOne(filter, undefined, options).select(include.join(' '))
+    const data = await this.model
+      .findOne(filter, undefined, options)
+      .select(include.join(' '))
 
     if (!data) return null
 
@@ -225,12 +277,16 @@ export class MongoRepository<T extends Document> implements IRepository<T, SaveO
 
     filter = this.applyFilterWhenFilterParameterIsNotFirstOption(filter)
 
-    const data = await this.model.find(filter, undefined, options).select(include.join(' '))
+    const data = await this.model
+      .find(filter, undefined, options)
+      .select(include.join(' '))
 
     return data.map((d) => d.toObject({ virtuals: true }))
   }
 
-  private applyFilterWhenFilterParameterIsNotFirstOption(filter?: FilterQuery<T>): FilterQuery<T> {
+  private applyFilterWhenFilterParameterIsNotFirstOption(
+    filter?: FilterQuery<T>
+  ): FilterQuery<T> {
     if (!filter) {
       filter = { deletedAt: null } as FilterQuery<T>
     }

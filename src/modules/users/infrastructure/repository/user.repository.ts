@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
 
+import { InjectRepository } from '@nestjs/typeorm'
 import { UserEntity } from '@modules/users/domain/entities/user.entity'
 import { UserDocument } from '@modules/users/domain/models/user.model'
 import { MongoRepository } from '@shared/infrastructure/repository/mongo/mongo.repository'

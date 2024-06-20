@@ -6,7 +6,9 @@ type GetDateWithFormatFormatInput = {
 }
 
 export class DateUtils {
-  static getDateStringWithFormat(input: Partial<GetDateWithFormatFormatInput> = {}): string {
+  static getDateStringWithFormat(
+    input: Partial<GetDateWithFormatFormatInput> = {}
+  ): string {
     if (!input?.date) {
       Object.assign(input, { date: DateUtils.getJSDate() })
     }
@@ -21,21 +23,35 @@ export class DateUtils {
   }
 
   static getISODateString(): string | null {
-    return DateTime.fromJSDate(DateUtils.getJSDate(), { zone: 'utc' }).setZone(process.env.TZ).toJSON()
+    return DateTime.fromJSDate(DateUtils.getJSDate(), { zone: 'utc' })
+      .setZone(process.env.TZ)
+      .toJSON()
   }
 
   static getJSDate(): Date {
-    return DateTime.fromJSDate(DateTime.now().toJSDate(), { zone: 'utc' }).setZone(process.env.TZ).toJSDate()
+    return DateTime.fromJSDate(DateTime.now().toJSDate(), { zone: 'utc' })
+      .setZone(process.env.TZ)
+      .toJSDate()
   }
 
-  static calculateDiff(date: Date, compareDate: Date, compareType: DurationUnit): Date {
-    const date1 = DateTime.fromJSDate(date, { zone: 'utc' }).setZone(process.env.TZ)
-    const date2 = DateTime.fromJSDate(compareDate, { zone: 'utc' }).setZone(process.env.TZ)
+  static calculateDiff(
+    date: Date,
+    compareDate: Date,
+    compareType: DurationUnit
+  ): Date {
+    const date1 = DateTime.fromJSDate(date, { zone: 'utc' }).setZone(
+      process.env.TZ
+    )
+    const date2 = DateTime.fromJSDate(compareDate, { zone: 'utc' }).setZone(
+      process.env.TZ
+    )
 
     return date1.diff(date2, compareType)[compareType]
   }
 
   static getDate(): DateTime {
-    return DateTime.fromJSDate(DateUtils.getJSDate(), { zone: 'utc' }).setZone(process.env.TZ)
+    return DateTime.fromJSDate(DateUtils.getJSDate(), { zone: 'utc' }).setZone(
+      process.env.TZ
+    )
   }
 }

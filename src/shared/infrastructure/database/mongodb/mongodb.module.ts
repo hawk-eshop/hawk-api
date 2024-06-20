@@ -17,10 +17,14 @@ import { MongoService } from './mongodb.service'
       imports: [PinoModule],
       useFactory: (configService: InfraService, logger: IPinoAdapter) => {
         const dbName = configService.mongodbConfig.dbName
-        const connection = new MongoService().getConnection({ URI: configService.mongodbConfig.uri }) as {
+        const connection = new MongoService().getConnection({
+          URI: configService.mongodbConfig.uri
+        }) as {
           uri?: string
         }
-        logger.log(`#==> Loading Mongodb connection: ${connection.uri} with dbName: ${dbName}`)
+        logger.log(
+          `#==> Loading Mongodb connection: ${connection.uri} with dbName: ${dbName}`
+        )
 
         return {
           connectionFactory: (connection: Connection) => {
@@ -28,13 +32,17 @@ import { MongoService } from './mongodb.service'
               logger.log('#==> Mongodb connected successfully!')
             }
             connection.on('disconnected', () => {
-              logger.error(new ApiInternalServerException('#==> Mongo disconnected!'))
+              logger.error(
+                new ApiInternalServerException('#==> Mongo disconnected!')
+              )
             })
             connection.on('reconnected', () => {
               logger.log(red('#==> Mongo reconnected!\n'))
             })
             connection.on('error', (error) => {
-              logger.error(new ApiInternalServerException(error.message || error))
+              logger.error(
+                new ApiInternalServerException(error.message || error)
+              )
             })
 
             return connection

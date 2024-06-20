@@ -1,10 +1,30 @@
-import { Entity, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  BaseEntity
+} from 'typeorm'
 
-import { BaseEntity, ICreationAudit, IDeletionAudit, IModificationAudit } from '@shared/utils/entity'
+import {
+  IBaseEntity,
+  ICreationAudit,
+  IDeletionAudit,
+  IModificationAudit
+} from '@shared/utils/entity'
 import { RoleEntity } from '@modules/roles/domain/entities/role.entity'
 
 @Entity('users')
-export class UserEntity extends BaseEntity implements ICreationAudit, IModificationAudit, IDeletionAudit {
+export class UserEntity
+  extends BaseEntity
+  implements IBaseEntity, ICreationAudit, IModificationAudit, IDeletionAudit
+{
+  @PrimaryGeneratedColumn('uuid')
+  id: string
+
   @Column()
   name: string
 

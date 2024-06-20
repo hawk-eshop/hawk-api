@@ -3,7 +3,10 @@ import { CommandBus } from '@nestjs/cqrs'
 
 import { ZodValidationPipe } from '@shared/pipes/zod.pipe'
 
-import { type CreateUserDto, createUserDto } from '@modules/users/application/dto/create-user.dto'
+import {
+  type CreateUserDto,
+  createUserDto
+} from '@modules/users/application/dto/create-user.dto'
 import { CreateUserCommand } from '@modules/users/application/commands/impl/create-user.command'
 
 @Controller('users')

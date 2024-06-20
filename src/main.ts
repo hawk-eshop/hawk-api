@@ -4,7 +4,10 @@ import bodyParser from 'body-parser'
 import { VersioningType } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
 import { NextFunction, Request, Response } from 'express'
-import { ExpressAdapter, type NestExpressApplication } from '@nestjs/platform-express'
+import {
+  ExpressAdapter,
+  type NestExpressApplication
+} from '@nestjs/platform-express'
 import { initializeTransactionalContext } from 'typeorm-transactional'
 import { bold } from 'colorette'
 
@@ -19,10 +22,14 @@ import { AppModule } from './app.module'
 export async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext()
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {
-    cors: true,
-    bufferLogs: true
-  })
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+    new ExpressAdapter(),
+    {
+      cors: true,
+      bufferLogs: true
+    }
+  )
 
   const loggerService = app.get(IPinoAdapter)
   loggerService.setContext(bootstrap.name)
@@ -30,7 +37,9 @@ export async function bootstrap(): Promise<NestExpressApplication> {
 
   app.useGlobalFilters(new ExceptionFilter(loggerService))
 
-  app.useGlobalInterceptors(new RequestTimeoutInterceptor(new Reflector(), loggerService))
+  app.useGlobalInterceptors(
+    new RequestTimeoutInterceptor(new Reflector(), loggerService)
+  )
 
   app.use(
     helmet({
@@ -70,7 +79,9 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const port = configService.appConfig.port
 
   await app.listen(port)
-  loggerService.log(`#==> Application is running at ${bold(await app.getUrl())}`)
+  loggerService.log(
+    `#==> Application is running at ${bold(await app.getUrl())}`
+  )
 
   return app
 }

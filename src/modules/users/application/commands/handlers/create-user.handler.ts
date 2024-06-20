@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common'
-import { CommandHandler, /* EventPublisher */ ICommandHandler } from '@nestjs/cqrs'
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 
 import { UserExistedException } from '@modules/users/domain/exceptions/user-existed.exception'
 import { UserRepository } from '@modules/users/infrastructure/repository/user.repository'
@@ -7,6 +7,7 @@ import { UserRepository } from '@modules/users/infrastructure/repository/user.re
 import { IPinoAdapter } from '@shared/infrastructure/pino/pino.adapter'
 
 import { CreateUserCommand } from '../impl/create-user.command'
+// import { RoleEntity } from '@modules/roles/domain/entities/role.entity'
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
@@ -15,7 +16,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     @Inject(UserRepository)
     private readonly userRepository: UserRepository
     // @Inject(RoleRepository)
-    // private readonly roleRepository: RoleRepository,
+    // private readonly roleRepository: RoleRepository
     // private publisher: EventPublisher
   ) {}
 
@@ -25,18 +26,26 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       CreateUserHandler.name
     )
     const { payload } = command
-    const existedUser = await this.userRepository.findOne({ email: payload.email })
+    const existedUser = await this.userRepository.findOne({
+      email: payload.email
+    })
 
     if (existedUser) {
       throw new UserExistedException()
     }
 
+    // let roles: RoleEntity[] = []
     // const { roles: roleIds } = payload
+    // if (roleIds && roleIds.length > 0) {
+    //   roles = await this.roleRepository.findIn({ id: roleIds })
+    // }
     // const roles = await this.roleRepository.findIn({ id: roleIds })
 
-    // const user = await this.userRepository.create({ ...payload, roles })
-    // const userContext = this.publisher.mergeObjectContext(user)
+    // const userContext = this.publisher.mergeObjectContext(
+    //   await this.userRepository.create({ ...payload, roles })
+    // )
 
+    // userContext.afterCreate(payload)
     // userContext.commit()
   }
 }

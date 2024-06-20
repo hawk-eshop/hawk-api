@@ -17,7 +17,9 @@ export class CollectionUtil {
     )
   }
 
-  static group = <T extends string | number>(collection: T[]): { [k: string]: T[] } => {
+  static group = <T extends string | number>(
+    collection: T[]
+  ): { [k: string]: T[] } => {
     return collection.reduce(
       (rv, x) => {
         const key = String(x)

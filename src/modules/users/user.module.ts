@@ -9,18 +9,19 @@ import { EventHandlers } from './application/events/handlers'
 import { QueryHandlers } from './application/queries/handlers'
 import { UserController } from './user.controller'
 
-import { UserRepository } from './infrastructure/repository/user.repository'
+import { RoleRepository } from '@modules/roles/infrastructure/repository/role.repository'
+import { UserRepository } from '@modules/users/infrastructure/repository/user.repository'
 
-import { UserEntity } from './domain/entities/user.entity'
-// import { RoleRepository } from '@modules/roles/infrastructure/repository/role.repository'
+import { UserEntity } from '@modules/users/domain/entities/user.entity'
+import { RoleEntity } from '@modules/roles/domain/entities/role.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, RoleEntity])],
   controllers: [UserController],
   providers: [
     { provide: IPinoAdapter, useClass: PinoLoggerService },
     UserRepository,
-    // RoleRepository,
+    RoleRepository,
     ...CommandHandlers,
     ...EventHandlers,
     ...QueryHandlers

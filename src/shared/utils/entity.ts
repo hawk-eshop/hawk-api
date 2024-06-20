@@ -1,10 +1,6 @@
-import { PrimaryGeneratedColumn, BaseEntity as BaseORM } from 'typeorm'
-
-export abstract class BaseEntity extends BaseORM {
-  @PrimaryGeneratedColumn('uuid')
+export interface IBaseEntity {
   id: string
 }
-
 export interface ICreationAudit {
   isActive: boolean
   createdAt: Date

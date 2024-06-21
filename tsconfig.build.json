@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "dist", "coverage", "logs", "data"]
+  "exclude": ["node_modules", "dist", "*coverage", "logs", "test", "data"]
 }

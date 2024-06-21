@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Response, NextFunction } from 'express'
 
-import { IRequestApp } from '@shared/request/interfaces/request.interface'
+import { IRequestApp } from '@shared/common/request/interfaces/request.interface'
 
 @Injectable()
 export class UrlVersionMiddleware implements NestMiddleware {

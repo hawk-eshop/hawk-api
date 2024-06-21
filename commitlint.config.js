@@ -1,11 +1,22 @@
-// eslint-disable-next-line no-undef
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
       2,
       'always',
-      ['feat', 'fix', 'improve', 'refactor', 'docs', 'chore', 'style', 'test', 'revert', 'ci', 'build']
+      [
+        'feat',
+        'fix',
+        'improve',
+        'refactor',
+        'docs',
+        'chore',
+        'style',
+        'test',
+        'revert',
+        'ci',
+        'build'
+      ]
     ],
     'type-case': [2, 'always', 'lower-case'],
     'type-empty': [2, 'never'],

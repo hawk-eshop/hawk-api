@@ -1,13 +1,16 @@
 {
-  "language": "ts",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "plugins": ["@nestjs/swagger"],
     "assets": [
       {
-        "include": "i18n/**/*",
-        "watchAssets": true
+        "include": "languages/**/*",
+        "outDir": "dist/src"
       }
-    ]
+    ],
+    "webpack": false,
+    "deleteOutDir": true,
+    "watchAssets": true
   }
 }

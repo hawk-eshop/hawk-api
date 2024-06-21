@@ -35,7 +35,6 @@ export default [
       }
     },
     linterOptions: {
-      noInlineConfig: true,
       reportUnusedDisableDirectives: true
     },
     plugins: {

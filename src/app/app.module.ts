@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 
+import { CommonModule } from '@shared/common/common.module'
+
 import { AppMiddlewareModule } from './app.middleware.module'
 
 @Module({
@@ -7,7 +9,8 @@ import { AppMiddlewareModule } from './app.middleware.module'
   providers: [],
   imports: [
     // Common
-    AppMiddlewareModule
+    AppMiddlewareModule,
+    CommonModule
   ]
 })
 export class AppModule {}

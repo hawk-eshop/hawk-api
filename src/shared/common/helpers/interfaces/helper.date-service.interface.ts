@@ -6,7 +6,7 @@ import {
   IHelperDateForwardOptions,
   IHelperDateRoundDownOptions,
   IHelperDateSetTimeOptions
-} from '@shared/helpers/interfaces/helper.interface'
+} from '@shared/common/helpers/interfaces/helper.interface'
 
 export interface IHelperDateService {
   calculateAge(dateOfBirth: Date, year?: number): number

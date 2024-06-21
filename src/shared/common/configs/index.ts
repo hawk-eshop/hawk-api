@@ -4,6 +4,8 @@ import MiddlewareConfig from '@shared/common/configs/middleware.config'
 import MessageConfig from '@shared/common/configs/message.config'
 import DebugConfig from '@shared/common/configs/debug.config'
 import DocsConfig from '@shared/common/configs/docs.config'
+import PinoConfig from '@shared/common/configs/pino.config'
+import PinoHttpConfig from '@shared/common/configs/pino-http.config'
 
 export default [
   AppConfig,
@@ -11,5 +13,7 @@ export default [
   MiddlewareConfig,
   MessageConfig,
   DebugConfig,
-  DocsConfig
+  DocsConfig,
+  PinoConfig,
+  PinoHttpConfig
 ]

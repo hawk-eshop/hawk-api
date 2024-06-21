@@ -4,8 +4,8 @@ import moment, { ISO_8601 } from 'moment-timezone'
 import {
   ENUM_HELPER_DATE_DIFF,
   ENUM_HELPER_DATE_FORMAT
-} from '@shared/helpers/constants/helper.enum.constant'
-import { IHelperDateService } from '@shared/helpers/interfaces/helper.date-service.interface'
+} from '@shared/common/helpers/constants/helper.enum.constant'
+import { IHelperDateService } from '@shared/common/helpers/interfaces/helper.date-service.interface'
 import {
   IHelperDateSetTimeOptions,
   IHelperDateFormatOptions,
@@ -14,7 +14,7 @@ import {
   IHelperDateForwardOptions,
   IHelperDateBackwardOptions,
   IHelperDateRoundDownOptions
-} from '@shared/helpers/interfaces/helper.interface'
+} from '@shared/common/helpers/interfaces/helper.interface'
 
 @Injectable()
 export class HelperDateService implements IHelperDateService {

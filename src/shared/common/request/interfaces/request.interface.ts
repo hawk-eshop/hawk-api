@@ -1,4 +1,5 @@
 import { Request } from 'express'
+import { ResponsePagingMetadataPaginationDto } from '@shared/common/response/dtos/response.paging.dto'
 
 export interface IRequestApp<
   T = Record<string, any>,
@@ -12,5 +13,5 @@ export interface IRequestApp<
   __language: string
   __version: string
 
-  //  __paging: ResponsePagingMetadataPaginationDto
+  __pagination?: ResponsePagingMetadataPaginationDto
 }

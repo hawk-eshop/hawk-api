@@ -1,5 +1,5 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { Logger } from '@nestjs/common'
+import { Logger } from '@zemd/nestjs-pino-logger'
 import { ConfigService } from '@nestjs/config'
 import { NestApplication } from '@nestjs/core'
 
@@ -7,7 +7,7 @@ import { writeFileSync } from 'fs'
 
 export default async function (app: NestApplication) {
   const configService = app.get(ConfigService)
-  const logger = new Logger()
+  const logger = app.get(Logger)
 
   const docName: string = configService.get<string>('docs.name')
   const docDesc: string = configService.get<string>('docs.description')
@@ -60,9 +60,5 @@ export default async function (app: NestApplication) {
     }
   })
 
-  logger.log(`==========================================================`)
-
-  logger.log(`Docs will serve on ${docPrefix}`, 'NestApplication')
-
-  logger.log(`==========================================================`)
+  logger.log(`Docs will serve on ${docPrefix}`, 'HawkAPISwagger')
 }

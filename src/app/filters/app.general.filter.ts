@@ -16,7 +16,7 @@ import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry'
 
 import { IRequestApp } from '@shared/common/request/interfaces/request.interface'
 import { MessageService } from '@shared/common/message/services/message.service'
-import { HelperDateService } from '@shared/common/helpers/services/helper.date.service'
+import { HelperDateService } from '@shared/common/helpers/services'
 import { ResponseMetadataDto } from '@shared/common/response/dtos/response.dto'
 import { IAppException } from '@app/interfaces/app.interface'
 import { RequestValidationException } from '@shared/common/request/exceptions/request.validation.exception'

@@ -1,4 +1,7 @@
 import { HttpStatus } from '@nestjs/common'
+
+import { IFileRows } from '@shared/common/file/interfaces/file.interface'
+import { ENUM_HELPER_FILE_EXCEL_TYPE } from '@shared/common/helpers/constants/helper.enum.constant'
 import { IMessageOptionsProperties } from '@shared/common/message/interfaces/message.interface'
 
 export interface IResponseCustomProperty {
@@ -19,10 +22,10 @@ export interface IResponseOptions {
   messageProperties?: IMessageOptionsProperties
 }
 
-// export interface IResponseFileExcelOptions {
-//   type?: ENUM_HELPER_FILE_EXCEL_TYPE
-//   password?: string
-// }
+export interface IResponseFileExcelOptions {
+  type?: ENUM_HELPER_FILE_EXCEL_TYPE
+  password?: string
+}
 
 // response
 export interface IResponse<T = void> {
@@ -42,6 +45,6 @@ export interface IResponsePaging<T> {
   data: T[]
 }
 
-// export interface IResponseFileExcel {
-//   data: IFileRows[]
-// }
+export interface IResponseFileExcel {
+  data: IFileRows[]
+}

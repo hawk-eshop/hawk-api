@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Response, NextFunction } from 'express'
 
-import { HelperArrayService } from '@shared/common/helpers/services/helper.array.service'
+import { HelperArrayService } from '@shared/common/helpers/services'
 import { IRequestApp } from '@shared/common/request/interfaces/request.interface'
 
 @Injectable()

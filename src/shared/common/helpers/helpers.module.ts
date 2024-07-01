@@ -5,7 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import {
   HelperArrayService,
   HelperDateService,
-  HelperNumberService
+  HelperNumberService,
+  HelperEncryptionService,
+  HelperHashService,
+  HelperStringService
 } from './services'
 
 @Global()
@@ -14,8 +17,22 @@ export class HelpersModule {
   static forRoot(): DynamicModule {
     return {
       module: HelpersModule,
-      providers: [HelperArrayService, HelperDateService, HelperNumberService],
-      exports: [HelperArrayService, HelperDateService, HelperNumberService],
+      providers: [
+        HelperArrayService,
+        HelperDateService,
+        HelperNumberService,
+        HelperEncryptionService,
+        HelperHashService,
+        HelperStringService
+      ],
+      exports: [
+        HelperArrayService,
+        HelperDateService,
+        HelperNumberService,
+        HelperEncryptionService,
+        HelperHashService,
+        HelperStringService
+      ],
       controllers: [],
       imports: [
         JwtModule.registerAsync({

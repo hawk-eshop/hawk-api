@@ -12,7 +12,7 @@ import {
   IMessageValidationImportError,
   IMessageValidationImportErrorParam
 } from '@shared/common/message/interfaces/message.interface'
-import { HelperArrayService } from '@shared/common/helpers/services/helper.array.service'
+import { HelperArrayService } from '@shared/common/helpers/services'
 
 @Injectable()
 export class MessageService implements IMessageService {

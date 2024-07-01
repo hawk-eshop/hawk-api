@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 
-const command = `npm run typeorm -- migration:run -d ./src/shared/infrastructure/database/postgresdb/config.ts`
+const command = `npm run typeorm -- migration:run -d ./@shared/infrastructure/database/postgresdb/config.ts`
 
 ;(() =>
   exec(command, (error, stdout, stderr) => {

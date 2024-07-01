@@ -36,9 +36,9 @@ import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@shared/common/request/constants
 
 import { ResponseDto } from '@shared/common/response/dtos/response.dto'
 import { ResponsePagingDto } from '@shared/common/response/dtos/response.paging.dto'
-import { ENUM_API_KEY_STATUS_CODE_ERROR } from 'src/common/api-key/constants/api-key.status-code.constant'
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/common/auth/constants/auth.status-code.constant'
-import { ENUM_POLICY_STATUS_CODE_ERROR } from 'src/common/policy/constants/policy.status-code.constant'
+import { ENUM_API_KEY_STATUS_CODE_ERROR } from '@shared/common/api-key/constants/api-key.status-code.constant'
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@shared/common/auth/constants/auth.status-code.constant'
+import { ENUM_POLICY_STATUS_CODE_ERROR } from '@shared/common/policy/constants/policy.status-code.constant'
 
 export function DocDefault<T>(options: IDocDefaultOptions<T>): MethodDecorator {
   const docs = []

@@ -29,7 +29,8 @@
     "Streamable",
     "superadmin",
     "userhistories",
-    "userpasswords"
+    "userpasswords",
+    "zemd"
   ],
   "ignorePaths": [
     "node_modules/**",

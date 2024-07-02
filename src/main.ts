@@ -91,7 +91,5 @@ async function bootstrap() {
 
   logger.log(`Http Server running on ${await app.getUrl()}`, 'HawkAPI')
   logger.log(`Database uri ${databaseUri}`, 'HawkAPI')
-
-  logger.log(`//=> =========================================================`)
 }
 bootstrap()

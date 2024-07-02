@@ -6,6 +6,9 @@ import DebugConfig from '@shared/common/configs/debug.config'
 import DocsConfig from '@shared/common/configs/docs.config'
 import PinoConfig from '@shared/common/configs/pino.config'
 import PinoHttpConfig from '@shared/common/configs/pino-http.config'
+import DatabaseConfig from '@shared/common/configs/database.config'
+import AuthConfig from '@shared/common/configs/auth.config'
+import HelperConfig from '@shared/common/configs/helper.config'
 
 export default [
   AppConfig,
@@ -15,5 +18,8 @@ export default [
   DebugConfig,
   DocsConfig,
   PinoConfig,
-  PinoHttpConfig
+  PinoHttpConfig,
+  DatabaseConfig,
+  AuthConfig,
+  HelperConfig
 ]
